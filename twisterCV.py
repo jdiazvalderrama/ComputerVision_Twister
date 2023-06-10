@@ -1,29 +1,37 @@
-# Librerias utilizadas
-import cv2
-import mediapipe as mp
-from pydub import AudioSegment
-from pydub.playback import play
+######################Importar librerias#######################
 
+ # Biblioteca para generar números aleatorios
+import random as rd 
 
-import pygame
+# Biblioteca para trabajar con el tiempo
+import time  
 
-import concurrent.futures
-import time
-import random as rd
+# Biblioteca para trabajar con rutas de archivos y directorios
+from pathlib import Path  
 
-pygame.mixer.init()
+# Biblioteca para operaciones en paralelo o en segundo plano
+import concurrent.futures  
 
+# Biblioteca para crear videojuegos y aplicaciones multimedia
+import pygame  
 
-def play_sound_acierto():
-    pygame.mixer.music.load("./acierto2.wav")  # Carga el sonido
-    pygame.mixer.music.play()  # Reproduce el sonido
+# Biblioteca para procesamiento de imágenes y visión por computadora
+import cv2  
 
-def play_sound_perdiste():
-    pygame.mixer.music.load("perdiste.wav")  # Carga el sonido
-    pygame.mixer.music.play()  # Reproduce el sonido
+# Biblioteca para detección y seguimiento de manos, rostros, etc.
+import mediapipe as mp  
 
+ # Biblioteca para manipular archivos de audio
+from pydub import AudioSegment 
 
-# Para reproduccion de sonidos asincronicos
+ # Biblioteca para reproducir archivos de audio
+from pydub.playback import play 
+
+###############################################################
+
+#############Definicion de variables globales##################
+
+# Ejecutor asincronico
 executor = concurrent.futures.ThreadPoolExecutor(max_workers=5)
 
 # Landmarks de mediapipe
@@ -31,13 +39,14 @@ mpDraw = mp.solutions.drawing_utils
 mpPose = mp.solutions.pose
 pose = mpPose.Pose()
 
-# Definicion de captura de camara 0, 1, 2,  3 (Dependiendo de qu e camara quiero usar)
-cap = cv2.VideoCapture(1)
+# Definicion de la camara
+camera = 1 # Dependiendo de la camara a utilizar el valor varia (0, 1, 2, 3)
+
+cap = cv2.VideoCapture(camera)
 success, img = cap.read()
 height, width, _ = img.shape
 
-
-# Definicion de color Inical RGB (Solo para
+# Definicion de color Inical RGB
 r = 255
 g = 255
 b = 255
@@ -64,16 +73,40 @@ posicion_amarillo = (rd.choice(ancho), rd.choice(alto))
 posicion_azul = (rd.choice(ancho), rd.choice(alto))
 posicion_rojo = (rd.choice(ancho), rd.choice(alto_pies))
 
+# Estados del juego
+estado_juego = True  # Estado para Jugar o Perder
+estado_interno = True  # Estado para reproducir solo una vez el sonido de perdida
+
+# Tiempo del juego
 TIEMPO = 10  # Tiempo contador constante
-contador = 0  # Contador de puntaje
-r = 50  # Radio de circulos que aparecen en pantalla
 inicio = time.time()
 t_anterior = 0
 cuenta_atras = TIEMPO
-estado = True  # Estado para Jugar o Perder
-estado_interno = True  # Estado para reproducir solo una vez el sonido de perdida
 contador_objetivo = 10  # NUmero al que la sudicultad sube
 
+# Contadores
+contador = 0  # Contador de puntaje
+
+# Asignaciones
+radio_circulo = 50  # Radio de circulos que aparecen en pantalla
+
+# Direcciones de sonido
+ruta_acierto2 = Path('./sonidos/acierto2.wav').resolve()
+ruta_perdiste = Path('./sonidos/perdiste.wav').resolve()
+
+###############################################################
+
+################### Definicion de funciones ###################
+
+def play_sound(sound):
+    pygame.mixer.music.load(sound)  # Carga el sonido
+    pygame.mixer.music.play()  # Reproduce el sonido
+
+###############################################################
+
+#############Inicio de bucle principal de juego################
+
+pygame.mixer.init()
 
 while True:
     success, img = cap.read()
@@ -82,7 +115,7 @@ while True:
     imgRGB = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
     results = pose.process(imgRGB)
     print(height, width)
-    if estado:
+    if estado_juego:
         if results.pose_landmarks is not None:
             # Dibujo de landmarks de cuerpo
             #mpDraw.draw_landmarks(img, results.pose_landmarks, mpPose.POSE_CONNECTIONS,
@@ -122,7 +155,7 @@ while True:
                 posicion_rojo = (rd.choice(ancho), rd.choice(alto_pies))
                 contador += 1  # Puntaje suma por acierto
                 cuenta_atras = TIEMPO  # Se resetea el tiempo
-                executor.submit(play_sound_acierto)  # Sonido de acierto
+                executor.submit(ruta_acierto2)  # Sonido de acierto
 
             # Cuenta Atras
             fin = time.time()
@@ -139,7 +172,7 @@ while True:
             # Subir dificultad
             if contador == contador_objetivo:
                 TIEMPO -= 1
-                r -= 3
+                radio_circulo -= 3
                 contador_objetivo = contador_objetivo + 5
 
             # Posicion de circulos aleatoreros
@@ -151,7 +184,7 @@ while True:
     else:
         # Estado de perder
         if estado_interno:
-            executor.submit(play_sound_perdiste)
+            executor.submit(ruta_perdiste)
             estado_interno = False
         cv2.putText(img, "PERDISTE", (width//4, height//2), cv2.FONT_HERSHEY_PLAIN, 4, (242, 133, 114), 10)
         cv2.putText(img, "Puntaje: "+str(contador), (width // 4, (height//4)*3), cv2.FONT_HERSHEY_PLAIN, 4, (114, 68, 242), 4)
@@ -163,7 +196,7 @@ while True:
         # Reiniciar el juego
         key = cv2.waitKey(1)
         if key == 114 or key == 82:
-            estado = True
+            estado_juego = True
             contador = 0
 
 
@@ -174,5 +207,5 @@ while True:
     if key == ord('q'):
         break
 
-
+###############################################################
 
