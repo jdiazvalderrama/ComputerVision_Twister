@@ -29,7 +29,10 @@ mpPose = mp.solutions.pose
 pose = mpPose.Pose()
 
 # Definicion de captura de camara 0, 1, 2,  3 (Dependiendo de qu e camara quiero usar)
-cap = cv2.VideoCapture(2)
+cap = cv2.VideoCapture(1)
+success, img = cap.read()
+height, width, _ = img.shape
+
 
 # Definicion de color Inical RGB (Solo para
 r = 255
@@ -49,13 +52,14 @@ rojo = (0, 0, 255)
 verde = (0, 255, 0)
 
 # Ancho y alto para definir rangos de aparicion de los circulos
-ancho = range(40, 600)
-alto = range(40, 440)
+ancho = range(50, width-50)
+alto = range(50, height-50)
+alto_pies = range(height//2, height-50)
 
 # Posiciones aleatoreas de los circulos en pantalla
 posicion_amarillo = (rd.choice(ancho), rd.choice(alto))
 posicion_azul = (rd.choice(ancho), rd.choice(alto))
-posicion_rojo = (rd.choice(ancho), rd.choice(range(300, 440)))
+posicion_rojo = (rd.choice(ancho), rd.choice(alto_pies))
 
 TIEMPO = 10  # Tiempo contador constante
 contador = 0  # Contador de puntaje
@@ -74,6 +78,7 @@ while True:
     img = cv2.flip(img, 1)
     imgRGB = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
     results = pose.process(imgRGB)
+    print(height, width)
     if estado:
         if results.pose_landmarks is not None:
             # Dibujo de landmarks de cuerpo
@@ -111,7 +116,7 @@ while True:
                      ((x1_pierIzq in range(posicion_rojo[0]-r, posicion_rojo[0]+r)) and (y1_pierIzq in range(posicion_rojo[1]-r, posicion_rojo[1]+r)))):
                 posicion_amarillo = (rd.choice(ancho), rd.choice(alto))
                 posicion_azul = (rd.choice(ancho), rd.choice(alto))
-                posicion_rojo = (rd.choice(ancho), rd.choice(range(300, 440)))
+                posicion_rojo = (rd.choice(ancho), rd.choice(alto_pies))
                 contador += 1  # Puntaje suma por acierto
                 cuenta_atras = TIEMPO  # Se resetea el tiempo
                 executor.submit(play_sound_acierto)  # Sonido de acierto
@@ -150,7 +155,7 @@ while True:
         cv2.putText(img, "Presiona 'R' para reiniciar", (width // 5, (height // 5)), cv2.FONT_HERSHEY_PLAIN, 2, (114, 68, 242), 4)
         posicion_amarillo = (rd.choice(ancho), rd.choice(alto))
         posicion_azul = (rd.choice(ancho), rd.choice(alto))
-        posicion_rojo = (rd.choice(ancho), rd.choice(range(300, 440)))
+        posicion_rojo = (rd.choice(ancho), rd.choice(alto_pies))
 
         # Reiniciar el juego
         key = cv2.waitKey(1)
