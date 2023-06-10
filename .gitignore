@@ -1,0 +1,35 @@
+# Entornos virtuales
+venv/
+twister/
+env/
+*.venv/
+*.env/
+
+# Archivos de configuración
+.env
+.pytest_cache/
+.coverage
+.tox/
+.hypothesis/
+.pytest_cache/
+
+# Archivos de compilación
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Archivos de logs
+*.log
+
+# Directorios generados
+build/
+dist/
+*.egg-info/
+
+# Otros archivos y directorios generados
+.idea/
+.vscode/
+*.bak
+*.swp
+.DS_Store
+Thumbs.db
