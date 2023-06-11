@@ -40,7 +40,7 @@ mpPose = mp.solutions.pose
 pose = mpPose.Pose()
 
 # Definicion de la camara
-camera = 1 # Dependiendo de la camara a utilizar el valor varia (0, 1, 2, 3)
+camera = 1  # Dependiendo de la camara a utilizar el valor varia (0, 1, 2, 3)
 
 cap = cv2.VideoCapture(camera)
 success, img = cap.read()
@@ -114,7 +114,7 @@ while True:
     img = cv2.flip(img, 1)
     imgRGB = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
     results = pose.process(imgRGB)
-    print(height, width)
+    print(estado_juego, estado_interno)
     if estado_juego:
         if results.pose_landmarks is not None:
             # Dibujo de landmarks de cuerpo
@@ -150,6 +150,7 @@ while True:
                     and ((x1_manoDer in range(posicion_azul[0]-r, posicion_azul[0]+r)) and (y1_manoDer in range(posicion_azul[1]-r, posicion_azul[1]+r))) and \
                     (((x1_pierDer in range(posicion_rojo[0]-r, posicion_rojo[0]+r)) and (y1_pierDer in range(posicion_rojo[1]-r, posicion_rojo[1]+r))) or \
                      ((x1_pierIzq in range(posicion_rojo[0]-r, posicion_rojo[0]+r)) and (y1_pierIzq in range(posicion_rojo[1]-r, posicion_rojo[1]+r)))):
+
                 posicion_amarillo = (rd.choice(ancho), rd.choice(alto))
                 posicion_azul = (rd.choice(ancho), rd.choice(alto))
                 posicion_rojo = (rd.choice(ancho), rd.choice(alto_pies))
@@ -164,7 +165,7 @@ while True:
                 cuenta_atras -= 1
                 if cuenta_atras <= 0:
                     print("PERDISTE", contador)
-                    estado = False
+                    estado_juego = False
                     estado_interno = True
                     cuenta_atras = TIEMPO
                 t_anterior = seg
