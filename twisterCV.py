@@ -38,14 +38,12 @@ executor = concurrent.futures.ThreadPoolExecutor(max_workers=5)
 mpDraw = mp.solutions.drawing_utils
 mpPose = mp.solutions.pose
 pose = mpPose.Pose()
-
 # Definicion de la camara
-camera = 0  # Dependiendo de la camara a utilizar el valor varia (0, 1, 2, 3)
+camera = 1  # Dependiendo de la camara a utilizar el valor varia (0, 1, 2, 3)
 
 cap = cv2.VideoCapture(camera)
 success, img = cap.read()
 height, width, _ = img.shape
-
 # Definicion de color Inical RGB
 r = 255
 g = 255
@@ -159,7 +157,8 @@ while True:
                 posicion_rojo = (rd.choice(ancho), rd.choice(alto_pies))
                 contador += 1  # Puntaje suma por acierto
                 cuenta_atras = TIEMPO  # Se resetea el tiempo
-                executor.submit(ruta_acierto2)  # Sonido de acierto
+                executor.submit(play_sound(ruta_acierto2))  # Sonido de acierto
+
 
             # Cuenta Atras
             fin = time.time()
@@ -193,7 +192,7 @@ while True:
     else:
         # Estado de perder
         if estado_interno:
-            executor.submit(ruta_perdiste)
+            executor.submit(play_sound(ruta_perdiste))  # Sonido de perder
             estado_interno = False
         cv2.putText(img, "PERDISTE", (width//4, height//2), cv2.FONT_HERSHEY_PLAIN, 4, (242, 133, 114), 10)
         cv2.putText(img, "Puntaje: "+str(contador), (width // 4, (height//4)*3), cv2.FONT_HERSHEY_PLAIN, 4, (114, 68, 242), 4)
