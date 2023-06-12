@@ -40,7 +40,7 @@ mpPose = mp.solutions.pose
 pose = mpPose.Pose()
 
 # Definicion de la camara
-camera = 1  # Dependiendo de la camara a utilizar el valor varia (0, 1, 2, 3)
+camera = 0  # Dependiendo de la camara a utilizar el valor varia (0, 1, 2, 3)
 
 cap = cv2.VideoCapture(camera)
 success, img = cap.read()
@@ -64,14 +64,14 @@ rojo = (0, 0, 255)
 verde = (0, 255, 0)
 
 # Ancho y alto para definir rangos de aparicion de los circulos
-ancho = range(50, width-50)
-alto = range(50, height-50)
-alto_pies = range(height//2, height-50)
+ancho = range(50, width-50)  # Rango válido para la coordenada x
+alto = range(50, height-50)  # Rango válido para la coordenada y
+alto_pies = range(height//2, height-50)  # Rango válido para la coordenada y de los pies
 
-# Posiciones aleatoreas de los circulos en pantalla
 posicion_amarillo = (rd.choice(ancho), rd.choice(alto))
 posicion_azul = (rd.choice(ancho), rd.choice(alto))
 posicion_rojo = (rd.choice(ancho), rd.choice(alto_pies))
+
 
 # Estados del juego
 estado_juego = True  # Estado para Jugar o Perder
@@ -88,7 +88,7 @@ contador_objetivo = 10  # NUmero al que la sudicultad sube
 contador = 0  # Contador de puntaje
 
 # Asignaciones
-radio_circulo = 50  # Radio de circulos que aparecen en pantalla
+radio_circulo = 50 # Radio de circulos que aparecen en pantalla
 
 # Direcciones de sonido
 ruta_acierto2 = Path('./sonidos/acierto2.wav').resolve()
@@ -112,9 +112,12 @@ while True:
     success, img = cap.read()
     height, width, _ = img.shape
     img = cv2.flip(img, 1)
+    
     imgRGB = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
     results = pose.process(imgRGB)
+    
     print(estado_juego, estado_interno)
+    
     if estado_juego:
         if results.pose_landmarks is not None:
             # Dibujo de landmarks de cuerpo
@@ -146,10 +149,10 @@ while True:
 
 
             # Colision manos-circulos
-            if ((x1_manoIzq in range(posicion_amarillo[0]-r, posicion_amarillo[0]+r)) and (y1_manoIzq in range(posicion_amarillo[1]-r, posicion_amarillo[1]+r)))\
-                    and ((x1_manoDer in range(posicion_azul[0]-r, posicion_azul[0]+r)) and (y1_manoDer in range(posicion_azul[1]-r, posicion_azul[1]+r))) and \
-                    (((x1_pierDer in range(posicion_rojo[0]-r, posicion_rojo[0]+r)) and (y1_pierDer in range(posicion_rojo[1]-r, posicion_rojo[1]+r))) or \
-                     ((x1_pierIzq in range(posicion_rojo[0]-r, posicion_rojo[0]+r)) and (y1_pierIzq in range(posicion_rojo[1]-r, posicion_rojo[1]+r)))):
+            if ((x1_manoIzq in range(posicion_amarillo[0]-radio_circulo, posicion_amarillo[0]+radio_circulo)) and (y1_manoIzq in range(posicion_amarillo[1]-radio_circulo, posicion_amarillo[1]+radio_circulo)))\
+                    and ((x1_manoDer in range(posicion_azul[0]-radio_circulo, posicion_azul[0]+radio_circulo)) and (y1_manoDer in range(posicion_azul[1]-radio_circulo, posicion_azul[1]+radio_circulo))) and \
+                    (((x1_pierDer in range(posicion_rojo[0]-radio_circulo, posicion_rojo[0]+radio_circulo)) and (y1_pierDer in range(posicion_rojo[1]-radio_circulo, posicion_rojo[1]+radio_circulo))) or \
+                     ((x1_pierIzq in range(posicion_rojo[0]-radio_circulo, posicion_rojo[0]+radio_circulo)) and (y1_pierIzq in range(posicion_rojo[1]-radio_circulo, posicion_rojo[1]+radio_circulo)))):
 
                 posicion_amarillo = (rd.choice(ancho), rd.choice(alto))
                 posicion_azul = (rd.choice(ancho), rd.choice(alto))
@@ -160,14 +163,18 @@ while True:
 
             # Cuenta Atras
             fin = time.time()
+            
             seg = int(fin - inicio)
+            
             if seg != t_anterior:
                 cuenta_atras -= 1
+                
                 if cuenta_atras <= 0:
                     print("PERDISTE", contador)
                     estado_juego = False
                     estado_interno = True
                     cuenta_atras = TIEMPO
+                    
                 t_anterior = seg
 
             # Subir dificultad
@@ -177,9 +184,10 @@ while True:
                 contador_objetivo = contador_objetivo + 5
 
             # Posicion de circulos aleatoreros
-            cv2.circle(img, posicion_amarillo, r, amarillo, 5)
-            cv2.circle(img, posicion_azul, r, azul, 5)
-            cv2.circle(img, posicion_rojo, r, rojo, 5)
+            cv2.circle(img, posicion_amarillo, radio_circulo, amarillo, 5)
+            cv2.circle(img, posicion_azul, radio_circulo, azul, 5)
+            cv2.circle(img, posicion_rojo, radio_circulo, rojo, 5)
+            
             cv2.putText(img, str(contador), (20, 60), cv2.FONT_HERSHEY_PLAIN, 5, (181, 255, 36), 10)
             cv2.putText(img, str(cuenta_atras), (width-60, 60), cv2.FONT_HERSHEY_PLAIN, 5, (0, 7, 255), 10)
     else:
