@@ -207,6 +207,7 @@ while True:
             estado_juego = True
             contador = 0
 
+        #ASDASDASD
 
     #img = cv2.resize(img, (1600, 900))
     cv2.imshow("Imagen2", img) # Mostrar imagen en tiempo real
