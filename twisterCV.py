@@ -324,13 +324,20 @@ while True:
                 executor.submit(play_sound(ruta_acierto2))
                 estado_juego = True
                 contador = 0
+                TIEMPO = 10
+                radio_circulo = 50
+                contador_objetivo = 10
+
             elif ((x1_manoIzq in range(x_centro - ancho_rectangulo // 2, x_centro + ancho_rectangulo // 2)) and (y1_manoIzq in range(y_centro + alto_rectangulo // 2 + alto_rectangulo,y_centro + 3 * alto_rectangulo // 2 + alto_rectangulo))) and \
                     ((x1_manoDer in range(x_centro - ancho_rectangulo // 2, x_centro + ancho_rectangulo // 2)) and (y1_manoDer in range(y_centro + alto_rectangulo // 2 + alto_rectangulo, y_centro + 3 * alto_rectangulo // 2 + alto_rectangulo))):
                 executor.submit(play_sound(ruta_acierto2))
                 estado_juego = True
                 estado_modo = 0
-                executor.submit(play_sound(ruta_acierto2))
-
+                TIEMPO = 10
+                contador = 0
+                radio_circulo = 50
+                contador_objetivo = 10
+            
     elif estado_modo == 2:
         if results.pose_landmarks is not None:
             # Dibujo de landmarks de cuerpo
@@ -438,12 +445,19 @@ while True:
                 executor.submit(play_sound(ruta_acierto2))
                 estado_juego = True
                 contador = 0
+                TIEMPO = 10
+                radio_circulo = 50
+                contador_objetivo = 10
             elif ((x1_manoIzq in range(x_centro - ancho_rectangulo // 2, x_centro + ancho_rectangulo // 2)) and (y1_manoIzq in range(y_centro + alto_rectangulo // 2 + alto_rectangulo,y_centro + 3 * alto_rectangulo // 2 + alto_rectangulo))) and \
                     ((x1_manoDer in range(x_centro - ancho_rectangulo // 2, x_centro + ancho_rectangulo // 2)) and (y1_manoDer in range(y_centro + alto_rectangulo // 2 + alto_rectangulo, y_centro + 3 * alto_rectangulo // 2 + alto_rectangulo))):
                 executor.submit(play_sound(ruta_acierto2))
                 estado_juego = True
                 estado_modo = 0
                 executor.submit(play_sound(ruta_acierto2))
+                TIEMPO = 10
+                contador = 0
+                radio_circulo = 50
+                contador_objetivo = 10
 
     #img = cv2.resize(img, (1600, 900))
     cv2.imshow("Imagen2", img) # Mostrar imagen en tiempo real
