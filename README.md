@@ -18,11 +18,11 @@ Este proyecto implementa un juego interactivo en el que el jugador debe capturar
 1. Asegúrate de estar en el directorio del proyecto y de tener el entorno virtual activado (si lo utilizas).
 2. Ejecuta el siguiente comando para iniciar el juego:
 
-<p align="center">python juego.py</p>
+<p align="center">python twisterCV.py</p>
 
-3. Mueve tus manos y piernas frente a la cámara para capturar los círculos en la pantalla.
+3. Mueve tus manos y piernas frente a la cámara para capturar los círculos en la pantalla (En los menús, la mano izquierda selecciona y la derecha confirma la selección).
 4. El objetivo es acumular la mayor cantidad de puntos posible capturando los círculos antes de que se acabe el tiempo.
-5. Si deseas reiniciar el juego, presiona la tecla 'R'.
+5. Si deseas reiniciar el juego, coloca tus dos manos en boton de reinicar de la pantalla.
 6. Para salir del juego, presiona la tecla 'Q' o cierra la ventana del juego.
 
 # Desarrolladores
